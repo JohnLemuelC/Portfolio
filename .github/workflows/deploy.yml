@@ -1,4 +1,8 @@
-name: Deploy to GitHub Pages
+name: Redirect to the current portfolio
+
+# This repo is the August 2026 version of the portfolio and is no longer built.
+# The current site lives at johnculinares.vercel.app, built from Website-Portfolio.
+# Pages here serves a redirect so old links do not land on the old design.
 
 on:
   push:
@@ -15,36 +19,15 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-          cache: "npm"
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build
-        run: npm run build
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./out
-
   deploy:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    needs: build
     steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
+      - uses: actions/checkout@v4
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./redirect
+      - id: deployment
         uses: actions/deploy-pages@v4
